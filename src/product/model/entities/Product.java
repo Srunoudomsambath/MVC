@@ -1,12 +1,16 @@
 package product.model.entities;
 
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
+import java.time.LocalDate;
+@Data
+@AllArgsConstructor
 public class Product {
     private Integer id;
     private String uuid;
     private String pName;
-    private LocalDateTime expiryDate;
+    private LocalDate expiredDate;
 
 
 }

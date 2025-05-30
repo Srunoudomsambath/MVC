@@ -1,22 +1,51 @@
 package product.model.dao;
 
+import product.model.ProductData;
+import product.model.dto.UpdateProductDto;
 import product.model.entities.Product;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class ProductRepository implements Repository <Product, Integer>{
     @Override
     public Product save(Product product) {
-        return null;
+        ProductData.products.add(product);
+        return product;
     }
 
     @Override
     public List<Product> findAll() {
-        return List.of();
+        return ProductData.products;
     }
 
     @Override
-    public Integer delete(Integer integer) {
-        return 0;
+    public Integer delete(Integer id) throws NoSuchElementException {
+        Product product = ProductData.products
+                .stream()
+                .filter(p->p.getId().equals(id))
+                .findFirst().get();
+        boolean isDeleted = ProductData.products.remove(product);
+        return isDeleted? 1: 0;
     }
+    public Product findByProductUuid(String uuid){
+        return ProductData.products
+                .stream()
+                .filter(p->p.getUuid().equals(uuid))
+                .findFirst().get();
+    }
+    public Product updateProductBuuuid(String uuid, UpdateProductDto updateProductDto){
+        Product product = findByProductUuid(uuid);
+        if(product!=null){
+            ProductData.products.remove(product);
+            product.setPName(updateProductDto.pName());
+
+            ProductData.products.add(product);
+            Collections.reverse(ProductData.products);
+            return product;
+        }
+        throw new NoSuchElementException("Cannot find Product");
+    }
+
 }
